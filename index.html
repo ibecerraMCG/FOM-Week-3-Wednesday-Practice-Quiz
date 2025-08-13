@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Wednesday Practice Quiz</title>
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            /* Default: Dark Theme */
+            --bg-color: #2d343e; /* Dark background */
+            --container-bg: #3c424f; /* Slightly lighter container */
+            --text-color: #e8e6e3; /* Light text */
+            --question-text-color: #8ab4f8; /* Light blue for questions */
+            --lo-text-color: #b0c4de; /* Lighter blue for learning objective */
+            --border-color: #555; /* Darker borders */
+            --separator-color: #4a4f5a;
+            --label-bg: #454c5a;
+            --label-border: #6c757d;
+            --label-hover-bg: #525966;
+            --label-hover-border: #7a828a;
+            --button-bg: #8ab4f8;
+            --button-text: #202124;
+            --button-hover-bg: #a3c5f9;
+            --button-disabled-bg: #5f6368;
+            --feedback-correct-bg: #344e41;
+            --feedback-correct-text: #c7f9cc;
+            --feedback-correct-border: #52b788;
+            --feedback-incorrect-bg: #5e2129;
+            --feedback-incorrect-text: #f8d7da;
+            --feedback-incorrect-border: #a4133c;
+            --feedback-rationale-text: #adb5bd; /* Lighter gray for rationale */
+            --feedback-source-text: #c7d3e0;
+            --feedback-separator: #6c757d;
+            --radio-accent: #8ab4f8;
+        }
+
+        .light-theme {
+            --bg-color: #eef2f7;
+            --container-bg: #ffffff;
+            --text-color: #343a40;
+            --question-text-color: #0056b3;
+            --lo-text-color: #5a6e8a;
+            --border-color: #dee2e6;
+            --separator-color: #e9ecef;
+            --label-bg: #f8f9fa;
+            --label-border: #ced4da;
+            --label-hover-bg: #e2e6ea;
+            --label-hover-border: #adb5bd;
+            --button-bg: #007bff;
+            --button-text: white;
+            --button-hover-bg: #0056b3;
+            --button-disabled-bg: #6c757d;
+            --feedback-correct-bg: #d1e7dd;
+            --feedback-correct-text: #0f5132;
+            --feedback-correct-border: #badbcc;
+            --feedback-incorrect-bg: #f8d7da;
+            --feedback-incorrect-text: #842029;
+            --feedback-incorrect-border: #f5c2c7;
+            --feedback-rationale-text: #495057;
+            --feedback-source-text: #343a40;
+            --feedback-separator: #ccc;
+            --radio-accent: #007bff;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--label-border);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 1000;
+             transition: background-color 0.3s, color 0.3s;
+        }
+         #theme-toggle-button:hover {
+             opacity: 0.8;
+         }
+
+
+        #quiz-container {
+            max-width: 900px;
+            margin: 80px auto 30px auto;
+            background: var(--container-bg);
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--separator-color);
+            transition: border-color 0.3s;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+        }
+        
+        .learning-objective {
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--lo-text-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--separator-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            color: var(--question-text-color);
+            transition: color 0.3s;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--label-border);
+            background-color: var(--label-bg);
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .options label:hover {
+            background-color: var(--label-hover-bg);
+            border-color: var(--label-hover-border);
+        }
+
+        .options input[type="radio"]:checked+span {
+             font-weight: bold;
+             color: var(--question-text-color);
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--radio-accent);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .check-button:hover {
+            opacity: 0.85;
+        }
+
+         .check-button:disabled {
+             background-color: var(--button-disabled-bg);
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-correct-bg);
+            color: var(--feedback-correct-text);
+            border-color: var(--feedback-correct-border);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-incorrect-bg);
+            color: var(--feedback-incorrect-text);
+            border-color: var(--feedback-incorrect-border);
+            display: block;
+        }
+
+        .feedback-status {
+             font-weight: bold;
+             font-size: 1.1em;
+             display: block;
+             margin-bottom: 8px;
+        }
+
+        .feedback-rationale {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--feedback-separator);
+            font-size: 0.9em;
+            color: var(--feedback-rationale-text);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        
+        .feedback-source {
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--feedback-source-text);
+            background-color: rgba(0,0,0,0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--question-text-color);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle-button">Toggle Theme</button>
+    <h1>Week 3 Wednesday Practice Quiz</h1>
+
+    <div id="quiz-container">
+        <!-- Questions will be loaded here by JavaScript -->
+    </div>
+
+    <script>
+        const quizData = [
+    {
+        learningObjective: "LO1 (Disorders of Urea Cycle): Explain how tissues produce ammonia that is subsequently captured into urea in the liver and then excreted by the kidney.",
+        question: "A 60-year-old man with a history of chronic alcohol abuse is admitted with confusion and asterixis. His blood ammonia level is significantly elevated. In the brain, the primary mechanism for detoxifying this excess ammonia involves its incorporation into which of the following molecules for transport out of the brain?",
+        options: { 
+            A: "Urea", 
+            B: "Alanine", 
+            C: "Glutamine", 
+            D: "Creatine" 
+        },
+        correctAnswer: "C",
+        rationale: "Peripheral tissues, especially the brain, cannot perform ureagenesis. To detoxify ammonia, they combine it with glutamate to form glutamine via the enzyme glutamine synthetase. This non-toxic compound is then released into the blood and transported to the liver and kidneys for processing.",
+        source: "'In the brain, ammonia is captured by glutamine synthesis. Through blood circulation Glutamine enters the liver.' (Disorders of Urea Cycle, Page 10)"
+    },
+    {
+        learningObjective: "LO1 (Disorders of Urea Cycle): Explain how tissues produce ammonia that is subsequently captured into urea in the liver and then excreted by the kidney.",
+        question: "During a prolonged period of vigorous exercise, skeletal muscle produces significant amounts of pyruvate. To prevent lactic acidosis, this pyruvate is transaminated to form alanine. The alanine is then transported to the liver, where its carbon skeleton is used for gluconeogenesis and its amino group is converted to urea. This entire process is known as the:",
+        options: { 
+            A: "Cori cycle", 
+            B: "Glucose-Alanine cycle", 
+            C: "Urea cycle", 
+            D: "Krebs cycle" 
+        },
+        correctAnswer: "B",
+        rationale: "The Glucose-Alanine cycle is a key inter-organ pathway for transporting nitrogen from muscle to the liver. Muscle transfers the amino group from other amino acids to pyruvate to form alanine, which is released into the blood. The liver takes up the alanine, converts it back to pyruvate (for glucose synthesis) and transfers the amino group for disposal as urea.",
+        source: "'How Muscle Does It? Glucose –Alanine Cycle... To prevent lactic acidosis, muscle isoform of ALT, ALT2, converts pyruvate into Alanine and while Glutamate is converted into α-KG.' (Disorders of Urea Cycle, Page 13)"
+    },
+    {
+        learningObjective: "LO1 (Disorders of Urea Cycle): Explain how tissues produce ammonia that is subsequently captured into urea in the liver and then excreted by the kidney.",
+        question: "A patient with chronic kidney disease is in a state of metabolic acidosis. To help buffer the excess protons in the blood, the kidneys increase their production of ammonia. Which amino acid is the primary substrate taken up by the kidney for this process?",
+        options: { 
+            A: "Alanine", 
+            B: "Glutamine", 
+            C: "Aspartate", 
+            D: "Arginine" 
+        },
+        correctAnswer: "B",
+        rationale: "In metabolic acidosis, the kidneys increase their uptake of glutamine from the circulation. The enzyme glutaminase removes an amino group from glutamine to produce glutamate and free ammonia (NH3). This ammonia can then accept a proton (H+) to become ammonium (NH4+), which is excreted in the urine, effectively removing acid from the body.",
+        source: "'The kidneys takes up Glutamine from the circulation and convert it to Glutamate using Glutaminase. This generates ammonia.' (Disorders of Urea Cycle, Page 14)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Urea Cycle): Describe how, why, and where specific enzymes (e.g., transaminases, glutamate dehydrogenase, and glutaminase) detoxify ammonia in amino acid metabolism.",
+        question: "A patient with acute viral hepatitis has elevated serum levels of both alanine aminotransferase (ALT) and aspartate aminotransferase (AST). These enzymes are central to amino acid metabolism because they transfer amino groups from various amino acids to α-ketoglutarate, forming which common product?",
+        options: { 
+            A: "Glutamine", 
+            B: "Glutamate", 
+            C: "Ammonia", 
+            D: "Urea" 
+        },
+        correctAnswer: "B",
+        rationale: "Transaminases (aminotransferases) like ALT and AST funnel amino groups from most amino acids to α-ketoglutarate. This reaction produces the corresponding α-keto acid from the original amino acid and converts α-ketoglutarate into glutamate. Glutamate then acts as a central collector of amino groups for further processing.",
+        source: "'In the liver, ALT... transfers the α-amino group of Ala to α-KG. So, Alanine becomes pyruvate and α-KG becomes glutamate.' (Disorders of Urea Cycle, Page 7)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Urea Cycle): Describe how, why, and where specific enzymes (e.g., transaminases, glutamate dehydrogenase, and glutaminase) detoxify ammonia in amino acid metabolism.",
+        question: "In the mitochondrial matrix of a hepatocyte, the enzyme glutamate dehydrogenase catalyzes the release of an amino group from glutamate as free ammonia, which then enters the urea cycle. This reaction is an example of:",
+        options: { 
+            A: "Transamination", 
+            B: "Oxidative deamination", 
+            C: "Decarboxylation", 
+            D: "Hydrolysis" 
+        },
+        correctAnswer: "B",
+        rationale: "Glutamate dehydrogenase removes the amino group from glutamate while simultaneously oxidizing the carbon skeleton, using NAD+ as an electron acceptor. This process, which releases free ammonia and regenerates α-ketoglutarate, is termed oxidative deamination and is a key step in linking amino acid catabolism to the urea cycle.",
+        source: "'In the liver, Glutamate dehydrogenase enzyme expressed in hepatic cells, takes away the amino group from glutamate and releases it as free ammonia. This reaction is called “oxidative deamination”.' (Disorders of Urea Cycle, Page 8)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Urea Cycle): Describe how, why, and where specific enzymes (e.g., transaminases, glutamate dehydrogenase, and glutaminase) detoxify ammonia in amino acid metabolism.",
+        question: "A 48-year-old male with a history of alcohol abuse presents with jaundice and ascites. His lab work shows an AST/ALT ratio greater than 2.0, low BUN, and elevated bilirubin. The low BUN level is a direct consequence of the failure of which liver-specific metabolic pathway?",
+        options: { 
+            A: "Glycolysis", 
+            B: "Gluconeogenesis", 
+            C: "The Urea Cycle", 
+            D: "The Cori Cycle" 
+        },
+        correctAnswer: "C",
+        rationale: "In severe liver disease (cirrhosis), the liver's capacity to detoxify ammonia via the urea cycle is impaired. Since the liver is the primary site of urea synthesis, a malfunction leads to decreased urea production. This results in a low Blood Urea Nitrogen (BUN) level, while the precursor, ammonia, accumulates in the blood.",
+        source: "'Always remember: In a liver disorder, plasma ALT, AST and bilirubin levels will increase; but blood urea nitrogen (BUN) levels will decrease. Because urea is synthesized in the liver.' (Disorders of Urea Cycle, Page 9)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Urea Cycle): Discuss how defects in each of the enzymes involved in the urea cycle cause disorders.",
+        question: "A 3-day-old male infant presents with lethargy, poor feeding, and vomiting. Lab studies show marked hyperammonemia, elevated glutamine, and significantly increased levels of orotic acid in the urine. These findings are most consistent with a deficiency of which enzyme?",
+        options: { 
+            A: "Carbamoyl phosphate synthetase I (CPS I)", 
+            B: "Ornithine transcarbamoylase (OTC)", 
+            C: "Argininosuccinate synthetase", 
+            D: "Arginase" 
+        },
+        correctAnswer: "B",
+        rationale: "OTC deficiency is the most common urea cycle disorder and is X-linked. A defect in OTC causes the accumulation of its substrate, carbamoyl phosphate, in the mitochondria. This excess carbamoyl phosphate leaks into the cytoplasm and is shunted into the pyrimidine synthesis pathway, leading to a massive overproduction and excretion of orotic acid. This orotic aciduria is the key diagnostic feature that distinguishes OTC deficiency from CPS I deficiency.",
+        source: "'Step 2 Defect: Hyperammonemia Type II (Orotic Aciduria)... Defect in Ornithine transcarbamoylase (OTC)... Carbamoyl phosphate gets converted into Orotic acid.' (Disorders of Urea Cycle, Page 26)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Urea Cycle): Discuss how defects in each of the enzymes involved in the urea cycle cause disorders.",
+        question: "A newborn is diagnosed with hyperammonemia type I. Laboratory analysis shows high ammonia and glutamine levels but an absence of orotic aciduria. This pattern is characteristic of a deficiency in which of the following enzymes?",
+        options: { 
+            A: "Ornithine transcarbamoylase (OTC)", 
+            B: "Argininosuccinate lyase", 
+            C: "Arginase", 
+            D: "Carbamoyl phosphate synthetase I (CPS I)" 
+        },
+        correctAnswer: "D",
+        rationale: "A deficiency in CPS I or its activator NAGS prevents the first step of the urea cycle: the synthesis of carbamoyl phosphate from ammonia and CO2. This leads to severe hyperammonemia because ammonia cannot enter the cycle. Since carbamoyl phosphate is not produced, it cannot be shunted into the pyrimidine pathway, and therefore orotic acid levels are not elevated. This absence of orotic aciduria is the key feature distinguishing it from OTC deficiency.",
+        source: "'Defect in Step 1: Hyperammonemia Type I... Deficiency in NAGS or CPS-I... Absence of orotic aciduria (Carbamoyl phosphate production is blocked).' (Disorders of Urea Cycle, Page 25)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Urea Cycle): Discuss how defects in each of the enzymes involved in the urea cycle cause disorders.",
+        question: "A patient with a deficiency in argininosuccinate lyase presents with hyperammonemia. In addition to elevated ammonia, their plasma would be expected to have a high concentration of which of the following compounds?",
+        options: { 
+            A: "Ornithine", 
+            B: "Citrulline", 
+            C: "Argininosuccinate", 
+            D: "Arginine" 
+        },
+        correctAnswer: "C",
+        rationale: "Enzyme deficiencies in metabolic pathways lead to the accumulation of the substrate immediately preceding the block. Argininosuccinate lyase catalyzes the cleavage of argininosuccinate into arginine and fumarate. A deficiency in this enzyme will cause its substrate, argininosuccinate, to accumulate in the plasma and be excreted in the urine.",
+        source: "'Enzyme Def.: Argininosuccinate lyase; Disorder Name: Argininosuccinic aciduria (Argininosuccinate accumulation); Serum Diagnostic: ↑ NH3, Argininosuccinate.' (Disorders of Urea Cycle, Page 27)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Urea Cycle): Describe the causes, symptoms, and treatment of hyperammonemia.",
+        question: "A patient with a urea cycle disorder is treated with sodium benzoate. The therapeutic mechanism of this drug is to conjugate with an amino acid, forming a product that can be readily excreted in the urine, thereby providing an alternative pathway for nitrogen disposal. Which amino acid does benzoate conjugate with?",
+        options: { 
+            A: "Glutamine", 
+            B: "Alanine", 
+            C: "Glycine", 
+            D: "Arginine" 
+        },
+        correctAnswer: "C",
+        rationale: "Sodium benzoate is used to capture and excrete nitrogen. Benzoate is converted to benzoyl-CoA, which then combines with glycine to form hippurate. Hippurate is water-soluble and is efficiently excreted by the kidneys, removing one nitrogen atom (from glycine) per molecule.",
+        source: "'Capture excess ammonia by sodium benzoate... Benzoate conjugates with coenzyme A to form benzoyl CoA. Benzoyl CoA combines with Glycine and is excreted out as Hippurate.' (Disorders of Urea Cycle, Page 28)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Urea Cycle): Describe the causes, symptoms, and treatment of hyperammonemia.",
+        question: "A 48-year-old male with a history of alcohol abuse is admitted for confusion and a hand tremor (asterixis). His lab results are: BUN 1.2 mg/dL, blood ammonia 88 µmole/L, ALT 200 U/L, and AST 135 U/L. The combination of very low BUN and high ammonia is most indicative of:",
+        options: { 
+            A: "Chronic kidney disease", 
+            B: "Ornithine transcarbamoylase deficiency", 
+            C: "Severe liver cirrhosis", 
+            D: "Muscle wasting disorder" 
+        },
+        correctAnswer: "C",
+        rationale: "This is a classic presentation of hepatic encephalopathy due to liver failure. The liver is responsible for synthesizing urea (measured as BUN) from ammonia. In severe cirrhosis, this function fails, leading to a decrease in urea production (low BUN) and a buildup of toxic ammonia in the blood (hyperammonemia). The elevated liver enzymes (ALT, AST) confirm liver damage.",
+        source: "'Case: A 48-year-old male with a history of drug and alcohol use was admitted for asterixis... Serum panel: BUN: 1.2 mg/dL, blood ammonia: 88 µmole/L; ALT 200 U/L; AST: 135 U/L. Diagnosis: A. Liver cirrhosis.' (Disorders of Urea Cycle, Page 29)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Urea Cycle): Describe the causes, symptoms, and treatment of hyperammonemia.",
+        question: "The neurotoxicity associated with hyperammonemia is largely due to the depletion of a key TCA cycle intermediate in the brain, as the brain attempts to detoxify the ammonia. The depletion of which intermediate disrupts brain energy metabolism?",
+        options: { 
+            A: "Citrate", 
+            B: "Succinyl-CoA", 
+            C: "α-ketoglutarate", 
+            D: "Malate" 
+        },
+        correctAnswer: "C",
+        rationale: "In the brain, excess ammonia is detoxified by being added to α-ketoglutarate to form glutamate (via glutamate dehydrogenase) and then to glutamate to form glutamine (via glutamine synthetase). This process consumes α-ketoglutarate, depleting a crucial intermediate of the TCA cycle. The slowing of the TCA cycle leads to a deficit in ATP production, causing neuronal dysfunction.",
+        source: "'Consequence: Depletion of α-KG: TCA cycle stops; ATP levels ↓.' (Disorders of Urea Cycle, Page 12)"
+    },
+    {
+        learningObjective: "LO1 (AA Metabolism): Distinguish between the key symptoms of diseases related to the branched chain amino acids (Maple syrup urine disease, propionic acidemia, malonic acidemia).",
+        question: "A 5-day-old infant presents with poor feeding, lethargy, and a distinctive sweet, burnt sugar-like odor in his urine and earwax. Lab tests show elevated plasma levels of leucine, isoleucine, and valine, as well as their corresponding α-ketoacids. These findings are diagnostic for which of the following disorders?",
+        options: { 
+            A: "Phenylketonuria (PKU)", 
+            B: "Propionic acidemia", 
+            C: "Maple Syrup Urine Disease (MSUD)", 
+            D: "Isovaleric acidemia" 
+        },
+        correctAnswer: "C",
+        rationale: "The combination of the characteristic maple syrup or burnt sugar odor and the accumulation of all three branched-chain amino acids (BCAAs) and their α-ketoacids is pathognomonic for MSUD. The disease is caused by a deficiency in the branched-chain α-ketoacid dehydrogenase (BCKD) complex.",
+        source: "'Maple Syrup Urine Disease (Ketoaciduria)... Symptoms: Distinctive maple sugar (sweet) odor... Diagnosis: BCAA and their α-ketoacids accumulate in blood & urine.' (AA Metabolism, Pages 7 & 8)"
+    },
+    {
+        learningObjective: "LO1 (AA Metabolism): Distinguish between the key symptoms of diseases related to the branched chain amino acids (Maple syrup urine disease, propionic acidemia, malonic acidemia).",
+        question: "An infant presents with vomiting, hypotonia, and metabolic acidosis. Lab work shows elevated levels of propionic acid and propionyl-CoA in the blood. This condition can be caused by a deficiency of propionyl-CoA carboxylase or a deficiency of its required vitamin cofactor. This metabolic block would primarily affect the catabolism of which amino acids?",
+        options: { 
+            A: "Leucine and lysine", 
+            B: "Phenylalanine and tyrosine", 
+            C: "Valine and isoleucine", 
+            D: "Glycine and serine" 
+        },
+        correctAnswer: "C",
+        rationale: "The catabolism of several amino acids, including the branched-chain amino acids valine and isoleucine (as well as methionine and threonine), produces propionyl-CoA as an end product. A defect in the propionyl-CoA carboxylase enzyme prevents its conversion to methylmalonyl-CoA, leading to propionic acidemia.",
+        source: "'Focus on Val & Ile: Propionic Acidemia & Methylmalonic acidemia.' The diagram shows that the breakdown of Val & Ile leads to Propionyl CoA. (AA Metabolism, Page 10)"
+    },
+    {
+        learningObjective: "LO1 (AA Metabolism): Distinguish between the key symptoms of diseases related to the branched chain amino acids (Maple syrup urine disease, propionic acidemia, malonic acidemia).",
+        question: "A newborn develops a severe metabolic illness. In addition to elevated levels of branched-chain α-ketoacids, lab tests also reveal significant lactic acidosis. This combination of findings suggests a defect in the E3 subunit of the BCKD complex because this subunit is also a component of which other enzyme complex?",
+        options: { 
+            A: "Pyruvate carboxylase", 
+            B: "Pyruvate dehydrogenase", 
+            C: "Alanine aminotransferase", 
+            D: "Propionyl-CoA carboxylase" 
+        },
+        correctAnswer: "B",
+        rationale: "The E3 subunit (dihydrolipoyl dehydrogenase) is a shared component of three crucial α-ketoacid dehydrogenase complexes: the branched-chain α-ketoacid dehydrogenase (BCKD), the pyruvate dehydrogenase (PDH), and the α-ketoglutarate dehydrogenase (KGDH) complexes. A defect in E3 will impair all three, leading to the accumulation of BCAAs (from BCKD defect) and lactate (from PDH defect).",
+        source: "'E3 subunit common in BCKD; PDH and KGDH... If E3 is defective: there will also be lactic acidosis (PDH will not work).' (AA Metabolism, Page 6)"
+    },
+    {
+        learningObjective: "LO2 (AA Metabolism): Discuss the inborn metabolic errors and clinical/pathological manifestations of phenylketonuria, albinism, alkaptonuria, tyrosinemia.",
+        question: "A 4-week-old infant who appeared normal at birth is brought in for follow-up of an abnormal newborn screen. The test shows a markedly elevated phenylalanine level. If left untreated, this condition, phenylketonuria (PKU), leads to severe intellectual disability. The biochemical defect is in which enzyme?",
+        options: { 
+            A: "Tyrosinase", 
+            B: "Phenylalanine hydroxylase", 
+            C: "Homogentisate oxidase", 
+            D: "Dihydrobiopterin reductase" 
+        },
+        correctAnswer: "B",
+        rationale: "Typical PKU is caused by a deficiency of phenylalanine hydroxylase (PAH). This enzyme catalyzes the conversion of the essential amino acid phenylalanine to tyrosine. Without PAH, phenylalanine accumulates to toxic levels in the blood and brain, while tyrosine becomes conditionally essential.",
+        source: "'Typical PKU: Defective/mutated phenylalanine hydroxylase.' (AA Metabolism, Page 14)"
+    },
+    {
+        learningObjective: "LO2 (AA Metabolism): Discuss the inborn metabolic errors and clinical/pathological manifestations of phenylketonuria, albinism, alkaptonuria, tyrosinemia.",
+        question: "A 40-year-old man presents with lower back pain and arthritis. He notes that his urine turns black when left standing. Physical examination reveals bluish-grey spots on his sclerae and darkening of the cartilage in his ears. This patient's condition is caused by the accumulation of which of the following substances?",
+        options: { 
+            A: "Phenylalanine", 
+            B: "Melanin", 
+            C: "Homogentisic acid", 
+            D: "Tyrosine" 
+        },
+        correctAnswer: "C",
+        rationale: "This is a classic presentation of alkaptonuria, also known as 'black urine disease'. It is caused by a deficiency of homogentisate oxidase, an enzyme in the degradative pathway of tyrosine. This leads to the accumulation of homogentisic acid, which oxidizes to a dark pigment (alkapton) that is deposited in connective tissues (ochronosis) and excreted in the urine.",
+        source: "'Alkaptonuria... Cause: Defective/mutated HGAO... Homogentisic acid (HGA) accumulates.' (AA Metabolism, Pages 18 & 19)"
+    },
+    {
+        learningObjective: "LO2 (AA Metabolism): Discuss the inborn metabolic errors and clinical/pathological manifestations of phenylketonuria, albinism, alkaptonuria, tyrosinemia.",
+        question: "A child is born with oculocutaneous albinism, characterized by a complete lack of pigment in the skin, hair, and eyes. This condition is caused by a deficiency in the enzyme tyrosinase, which is responsible for the first step in the synthesis of which of the following molecules?",
+        options: { 
+            A: "Dopamine", 
+            B: "Thyroxine", 
+            C: "Melanin", 
+            D: "Heme" 
+        },
+        correctAnswer: "C",
+        rationale: "Tyrosinase is the key enzyme in melanogenesis. It catalyzes the conversion of tyrosine to L-DOPA and subsequent steps in the pathway that produces melanin pigments. A defect in this enzyme blocks melanin synthesis, resulting in albinism.",
+        source: "'Albinism... Cause: Defective/mutated Tyrosinase... Diagnosis: No melanin pigment.' (AA Metabolism, Page 20)"
+    },
+    {
+        learningObjective: "LO3 (AA Metabolism): Discuss the individual roles of folic acid, vitamin B12, and methionine in one-carbon metabolism and clinical manifestation of homocysteinuria.",
+        question: "A 22-year-old patient presents with a deep vein thrombosis. Physical examination reveals a tall, thin build, scoliosis, and downward dislocation of the ocular lenses (ectopia lentis). Lab studies show elevated levels of homocysteine in the blood and urine. A deficiency in which of the following enzymes is the most common cause of this disorder?",
+        options: { 
+            A: "Methionine synthase", 
+            B: "MTHFR", 
+            C: "Cystathionine β-synthase (CBS)", 
+            D: "Phenylalanine hydroxylase" 
+        },
+        correctAnswer: "C",
+        rationale: "This clinical picture is characteristic of classic homocystinuria. The most common cause is a deficiency in cystathionine β-synthase (CBS), which catalyzes the conversion of homocysteine to cystathionine. This defect blocks the transsulfuration pathway, leading to the accumulation of homocysteine, which causes endothelial damage, thrombosis, and connective tissue abnormalities.",
+        source: "'Homocystinuria... Cause: Defective... cystathionine-β-synthetase (CBS). CBS defect is more common.' (AA Metabolism, Page 30)"
+    },
+    {
+        learningObjective: "LO3 (AA Metabolism): Discuss the individual roles of folic acid, vitamin B12, and methionine in one-carbon metabolism and clinical manifestation of homocysteinuria.",
+        question: "A patient with homocystinuria due to a deficiency of methionine synthase is found to have megaloblastic anemia. This is because methionine synthase requires a cofactor derived from vitamin B12, and its inactivity also traps which other vitamin in a metabolically inactive form?",
+        options: { 
+            A: "Vitamin B6 (pyridoxine)", 
+            B: "Vitamin B2 (riboflavin)", 
+            C: "Vitamin C (ascorbic acid)", 
+            D: "Vitamin B9 (folate)" 
+        },
+        correctAnswer: "D",
+        rationale: "Methionine synthase catalyzes the transfer of a methyl group from methyl-tetrahydrofolate (methyl-THF) to homocysteine, regenerating methionine. This reaction requires methylcobalamin (a form of B12) and is the only reaction that can demethylate methyl-THF. If the enzyme is deficient, folate becomes 'trapped' as methyl-THF and cannot be converted to other THF forms needed for nucleotide synthesis, leading to megaloblastic anemia.",
+        source: "The diagram on page 28 ('Methionine & folate cycle') shows that the conversion of 5-Methyl THF back to THF is catalyzed by Methionine synthase (MS), which requires B12. A defect here would trap folate in the 5-Methyl THF form."
+    },
+    {
+        learningObjective: "LO3 (AA Metabolism): Discuss the individual roles of folic acid, vitamin B12, and methionine in one-carbon metabolism and clinical manifestation of homocysteinuria.",
+        question: "In the metabolism of methionine, S-adenosylmethionine (SAM) is formed. SAM is a critically important molecule in the cell because it serves as the primary donor of which of the following groups for numerous biosynthetic reactions, including DNA methylation?",
+        options: { 
+            A: "Amino groups", 
+            B: "Methyl groups", 
+            C: "Carboxyl groups", 
+            D: "Phosphate groups" 
+        },
+        correctAnswer: "B",
+        rationale: "SAM is the universal methyl group donor in the body. The methyl group attached to its sulfur atom is 'activated' and can be transferred to a wide variety of acceptor molecules, including DNA, RNA, proteins, and phospholipids. This process is essential for gene regulation, neurotransmitter synthesis, and many other pathways.",
+        source: "'S-adenosylmethionine (SAM, SAM-e) synthesis: SAM donates “high energy” methyl group (CH3) in 40 different reactions.' (AA Metabolism, Page 27)"
+    },
+    {
+        learningObjective: "LO1 (Integration): Explain the utilization of biomolecules as energy source under various physiological conditions and the integration of various metabolic pathways under these conditions in liver, adipose, brain, and muscle tissues.",
+        question: "After 48 hours of fasting, a healthy medical student's brain continues to function at a high level. While the brain primarily uses glucose, under these conditions it begins to utilize an alternative fuel source to spare glucose for tissues like red blood cells. What is this alternative fuel?",
+        options: { 
+            A: "Free fatty acids", 
+            B: "Ketone bodies", 
+            C: "Lactate", 
+            D: "Amino acids" 
+        },
+        correctAnswer: "B",
+        rationale: "During prolonged fasting, the liver produces ketone bodies (acetoacetate and β-hydroxybutyrate) from the acetyl-CoA generated by fatty acid oxidation. Unlike fatty acids, which are bound to albumin and cannot cross the blood-brain barrier, ketone bodies are water-soluble and can be readily transported into the brain and used as a major source of energy.",
+        source: "'When oxygen supply is normal, but the supply of glucose becomes limited, the cells start utilizing fatty acids or ketone bodies... Some cells, such as the nerve cells in the brain, are not able to use fatty acids... however, can utilize ketone bodies which can cross the blood brain barrier as an energy source.' (Integration of Metabolic Pathways, Page 5)"
+    },
+    {
+        learningObjective: "LO1 (Integration): Explain the utilization of biomolecules as energy source under various physiological conditions and the integration of various metabolic pathways under these conditions in liver, adipose, brain, and muscle tissues.",
+        question: "A patient is in a state of septic shock, leading to widespread tissue hypoxia. The cells are forced to rely on anaerobic glycolysis for ATP production. This metabolic state is characterized by a significant increase in the plasma concentration of which of the following molecules?",
+        options: { 
+            A: "Ketone bodies", 
+            B: "Free fatty acids", 
+            C: "Glucose", 
+            D: "Lactate" 
+        },
+        correctAnswer: "D",
+        rationale: "Under hypoxic conditions, pyruvate produced by glycolysis cannot be oxidized by the pyruvate dehydrogenase complex and the TCA cycle. To regenerate the NAD+ needed for glycolysis to continue, pyruvate is reduced to lactate. Widespread hypoxia leads to a massive overproduction of lactate, resulting in lactic acidosis.",
+        source: "'An increase in plasma lactate levels is one of the indicators of glycolysis taking place in the body. This could be due to hypoxia (anaerobic glycolysis) in the setting of sepsis and poor tissue perfusion (type A lactic acidosis)...' (Integration of Metabolic Pathways, Page 4)"
+    },
+    {
+        learningObjective: "LO1 (Integration): Explain the utilization of biomolecules as energy source under various physiological conditions and the integration of various metabolic pathways under these conditions in liver, adipose, brain, and muscle tissues.",
+        question: "Which of the following correctly describes the metabolic capabilities of red blood cells (RBCs)?",
+        options: { 
+            A: "They can use glucose, fatty acids, and ketone bodies for fuel.", 
+            B: "They rely exclusively on anaerobic glycolysis of glucose for ATP.", 
+            C: "They can perform gluconeogenesis to maintain blood glucose.", 
+            D: "They primarily use aerobic metabolism in their numerous mitochondria." 
+        },
+        correctAnswer: "B",
+        rationale: "Red blood cells lack mitochondria. Therefore, they cannot perform the TCA cycle or oxidative phosphorylation. Their entire energy supply (ATP) is derived from the anaerobic glycolysis of glucose to lactate.",
+        source: "'RBCs Only anaerobic metabolism; utilizes glucose only.' (Integration of Metabolic Pathways, Page 8)"
+    },
+    {
+        learningObjective: "LO2 (Integration): Discuss the function of the primary organs of metabolism and list the key hormonal regulators of intermediary metabolism and their impact on metabolic pathways.",
+        question: "A patient's skeletal muscle takes up glucose from the blood and stores it as glycogen. However, during a period of fasting, this stored glycogen cannot be released into the blood to maintain blood glucose levels. This is because skeletal muscle lacks which of the following enzymes?",
+        options: { 
+            A: "Glycogen synthase", 
+            B: "Glycogen phosphorylase", 
+            C: "Glucose-6-phosphatase", 
+            D: "Hexokinase" 
+        },
+        correctAnswer: "C",
+        rationale: "Both liver and muscle can store glycogen. However, only the liver can release free glucose into the bloodstream because it expresses the enzyme glucose-6-phosphatase, which dephosphorylates glucose-6-phosphate (the product of glycogenolysis). Muscle lacks this enzyme, so any glucose derived from its glycogen stores is trapped within the muscle cell and must be used for its own energy needs via glycolysis.",
+        source: "'Muscle Storage of glycogen and creatine phosphate only for itself.' (Integration of Metabolic Pathways, Page 8)"
+    },
+    {
+        learningObjective: "LO2 (Integration): Discuss the function of the primary organs of metabolism and list the key hormonal regulators of intermediary metabolism and their impact on metabolic pathways.",
+        question: "Following a protein-rich meal, both insulin and glucagon are secreted. However, after a carbohydrate-rich meal, insulin secretion is high while glucagon secretion is suppressed. The primary hormonal signal that promotes anabolic processes like glycogen and fat synthesis is:",
+        options: { 
+            A: "Glucagon", 
+            B: "Insulin", 
+            C: "Cortisol", 
+            D: "Epinephrine" 
+        },
+        correctAnswer: "B",
+        rationale: "Insulin is the primary anabolic hormone. It is released in response to high blood glucose and signals the body to take up, utilize, and store nutrients. It promotes glucose uptake, glycogen synthesis, fat synthesis, and protein synthesis, while inhibiting catabolic processes.",
+        source: "'In a nutshell, it [insulin] stimulates glucose utilization, sparing fatty acid oxidation, and synthesis of proteins, fatty acids, triglycerides, and cholesterol. It is considered as an anabolic hormone.' (Integration of Metabolic Pathways, Page 13)"
+    },
+    {
+        learningObjective: "LO2 (Integration): Discuss the function of the primary organs of metabolism and list the key hormonal regulators of intermediary metabolism and their impact on metabolic pathways.",
+        question: "A patient is in a state of physiological stress due to a severe infection. The release of catecholamines (epinephrine and norepinephrine) has a significant impact on metabolism. In skeletal muscle, what is the effect of epinephrine?",
+        options: { 
+            A: "It inhibits glycolysis.", 
+            B: "It stimulates glycogen synthesis.", 
+            C: "It stimulates glycogen breakdown.", 
+            D: "It has no effect on muscle metabolism." 
+        },
+        correctAnswer: "C",
+        rationale: "Epinephrine signals a need for readily available energy. In skeletal muscle, it stimulates glycogenolysis (glycogen breakdown) to provide glucose-6-phosphate for glycolysis, generating ATP to fuel muscle activity ('fight or flight' response). Unlike in the liver, epinephrine does not inhibit glycolysis in the muscle.",
+        source: "'Metabolic Effects of Glucagon & Catecholamine... Epinephrine & Norepinephrine: ↑ Glycogen breakdown (muscle & liver)... does not inhibit glycolysis in heart & skeletal muscle' (Integration of Metabolic Pathways, Page 16)"
+    },
+    {
+        learningObjective: "LO3 (Integration): Describe the interorgan metabolic interactions in the fed state and relate it to the circulation levels of insulin and glucagon.",
+        question: "Immediately following a carbohydrate-rich meal, high levels of insulin direct the flow of metabolic fuels. In the liver, excess glucose is taken up and converted to acetyl-CoA. This acetyl-CoA is then primarily used for which of the following processes?",
+        options: { 
+            A: "Ketone body synthesis", 
+            B: "Gluconeogenesis", 
+            C: "Fatty acid synthesis", 
+            D: "Oxidation in the TCA cycle for immediate energy" 
+        },
+        correctAnswer: "C",
+        rationale: "In the fed state, the liver's energy needs are met, and the TCA cycle is saturated. High insulin and high citrate levels stimulate acetyl-CoA carboxylase, shunting the excess acetyl-CoA derived from glucose into the fatty acid synthesis pathway. These newly synthesized fatty acids are then esterified to form triglycerides and packaged into VLDL for export.",
+        source: "The 'Interorgan Metabolic Interactions in Fed State' diagram shows that in the liver, glucose is converted to acetyl-CoA, which is then used for 'TG -> FAS' (triglyceride and fatty acid synthesis). (Integration of Metabolic Pathways, Page 20)"
+    },
+    {
+        learningObjective: "LO3 (Integration): Describe the interorgan metabolic interactions in the fed state and relate it to the circulation levels of insulin and glucagon.",
+        question: "In the fed state, dietary triglycerides are transported from the intestine in chylomicrons. These triglycerides are delivered to adipose tissue for storage after being hydrolyzed by which of the following enzymes?",
+        options: { 
+            A: "Hormone-sensitive lipase", 
+            B: "Hepatic lipase", 
+            C: "Lipoprotein lipase", 
+            D: "Pancreatic lipase" 
+        },
+        correctAnswer: "C",
+        rationale: "Lipoprotein lipase (LPL) is located on the surface of capillaries in adipose tissue and muscle. It is activated by ApoC-II on chylomicrons (and VLDL). LPL hydrolyzes the triglycerides in these lipoproteins, releasing fatty acids that are then taken up by the adipocytes for re-esterification and storage.",
+        source: "The 'Interorgan Metabolic Interactions in Fed State' diagram shows chylomicrons from the gut delivering triglycerides (TG) to the adipocyte via the action of LPL (implied by the release of fatty acids, FAS). (Integration of Metabolic Pathways, Page 20)"
+    },
+    {
+        learningObjective: "LO3 (Integration): Describe the interorgan metabolic interactions in the fed state and relate it to the circulation levels of insulin and glucagon.",
+        question: "A healthy individual has just consumed a large meal. The hormonal profile at this time would be characterized by:",
+        options: { 
+            A: "High insulin, high glucagon", 
+            B: "High insulin, low glucagon", 
+            C: "Low insulin, high glucagon", 
+            D: "Low insulin, low glucagon" 
+        },
+        correctAnswer: "B",
+        rationale: "The fed state is defined by the absorption of nutrients, primarily glucose, which stimulates the pancreatic beta cells to release insulin and inhibits the alpha cells from releasing glucagon. The resulting high insulin-to-glucagon ratio is the primary hormonal signal that drives anabolic, storage pathways throughout the body.",
+        source: "'Hormonal Status: High insulin; low glucagon; low catcholamines [catecholamines].' (Integration of Metabolic Pathways, Page 20)"
+    },
+    {
+        learningObjective: "LO4 (Integration): Describe the interorgan metabolic interactions in the fasting state and relate it to the circulation levels of insulin and glucagon.",
+        question: "After a 12-hour overnight fast, the primary source for maintaining blood glucose levels is the breakdown of glycogen in the liver (glycogenolysis). As the fast continues beyond 12-14 hours, which of the following processes becomes the major source of blood glucose?",
+        options: { 
+            A: "Muscle glycogenolysis", 
+            B: "Hepatic gluconeogenesis", 
+            C: "Adipose tissue lipolysis", 
+            D: "Hepatic ketogenesis" 
+        },
+        correctAnswer: "B",
+        rationale: "Liver glycogen stores are depleted after about 12-14 hours of fasting. To continue to supply glucose to the brain and RBCs, the liver switches to gluconeogenesis, synthesizing new glucose primarily from amino acids (from muscle protein breakdown) and glycerol (from fat breakdown).",
+        source: "'Liver glycogen stores would probably last for approximately 12-14 hours. However, as the glycogen stores dry out, liver shifts to gluconeogenesis to synthesize and secrete glucose.' (Integration of Metabolic Pathways, Page 24)"
+    },
+    {
+        learningObjective: "LO4 (Integration): Describe the interorgan metabolic interactions in the fasting state and relate it to the circulation levels of insulin and glucagon.",
+        question: "During starvation, lipolysis in adipose tissue is greatly increased, releasing free fatty acids and glycerol into the blood. The glycerol is transported to the liver, where it can be used as a substrate for which of the following metabolic pathways?",
+        options: { 
+            A: "Glycolysis", 
+            B: "Ketogenesis", 
+            C: "The TCA cycle", 
+            D: "Gluconeogenesis" 
+        },
+        correctAnswer: "D",
+        rationale: "Glycerol released from triglyceride breakdown is a key gluconeogenic precursor. The liver takes up glycerol and phosphorylates it to glycerol-3-phosphate, which is then oxidized to dihydroxyacetone phosphate (DHAP), an intermediate in the gluconeogenic pathway that can be converted to glucose.",
+        source: "The 'Interorgan Metabolic Interactions During Early Stages of Starvation' diagram shows glycerol from the adipocyte going to the liver, where it enters the 'Gluconeogenic precursors' pool. (Integration of Metabolic Pathways, Page 24)"
+    },
+    {
+        learningObjective: "LO4 (Integration): Describe the interorgan metabolic interactions in the fasting state and relate it to the circulation levels of insulin and glucagon.",
+        question: "A patient has been fasting for three days. The hormonal state that is driving the metabolic adaptations to this prolonged fast is best characterized by:",
+        options: { 
+            A: "High insulin, low glucagon", 
+            B: "High insulin, high catecholamines", 
+            C: "Low insulin, very high glucagon, high catecholamines", 
+            D: "Low insulin, low glucagon" 
+        },
+        correctAnswer: "C",
+        rationale: "Prolonged fasting leads to a state of very low insulin and very high levels of the counter-regulatory hormones glucagon and catecholamines. This hormonal milieu strongly promotes catabolism: lipolysis in adipose tissue, gluconeogenesis and ketogenesis in the liver, and protein breakdown in muscle to provide substrates for gluconeogenesis.",
+        source: "'Hormonal Status: Very low insulin, very high glucagon, high catecholamines.' (Integration of Metabolic Pathways, Page 25)"
+    }
+];
+
+        const quizContainer = document.getElementById('quiz-container');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const bodyElement = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                bodyElement.classList.add('light-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                bodyElement.classList.remove('light-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            localStorage.setItem('quizTheme', theme);
+        }
+
+        function loadQuiz() {
+            quizData.forEach((qData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.id = `q${index}`;
+
+                const loText = document.createElement('div');
+                loText.classList.add('learning-objective');
+                loText.textContent = qData.learningObjective;
+                questionBlock.appendChild(loText);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                // Use innerHTML to correctly render any potential HTML tags in questions
+                questionText.innerHTML = `${index + 1}. ${qData.question}`;
+                questionBlock.appendChild(questionText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                for (const optionKey in qData.options) {
+                    const optionId = `q${index}_${optionKey}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `q${index}`;
+                    radioInput.value = optionKey;
+                    radioInput.id = optionId;
+
+                    const labelText = document.createElement('span');
+                    labelText.innerHTML = ` ${optionKey}. ${qData.options[optionKey]}`;
+                    
+                    label.appendChild(radioInput);
+                    label.appendChild(labelText);
+                    optionsDiv.appendChild(label);
+                }
+                questionBlock.appendChild(optionsDiv);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.addEventListener('click', () => checkAnswer(index));
+                buttonContainer.appendChild(checkButton);
+                
+                questionBlock.appendChild(buttonContainer);
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback');
+                questionBlock.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        function checkAnswer(questionIndex) {
+            const questionBlockElement = document.getElementById(`q${questionIndex}`);
+            const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+            const feedbackDiv = questionBlockElement.querySelector('.feedback');
+
+            if (!selectedRadioButton) {
+                 feedbackDiv.innerHTML = `<span class="feedback-status">Please select an answer.</span>`;
+                 feedbackDiv.className = 'feedback incorrect'; // Use incorrect styling for the alert
+                return;
+            }
+
+            const selectedOptionKey = selectedRadioButton.value;
+            const qData = quizData[questionIndex];
+            const correct = selectedOptionKey === qData.correctAnswer;
+
+            let feedbackHTML = '';
+
+            if (correct) {
+                feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                 feedbackHTML = `<span class="feedback-status">Incorrect.</span> The correct answer is ${qData.correctAnswer}.`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+
+            feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+            feedbackHTML += `<div class="feedback-source">${qData.source}</div>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            if (bodyElement.classList.contains('light-theme')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            applyTheme(savedTheme);
+            loadQuiz();
+        });
+
+    </script>
+
+</body>
+</html>
